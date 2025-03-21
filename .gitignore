@@ -11,3 +11,6 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# スナップショットディレクトリは除外しない（Git管理対象）
+!**/*-snapshots/
