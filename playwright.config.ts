@@ -34,17 +34,7 @@ export default defineConfig({
     /* スナップショットの設定 */
     screenshot: 'only-on-failure',
   },
-  
-  /* スナップショットの比較設定 */
-  expect: {
-    /* 許容される違いのパーセンテージ */
-    toHaveScreenshot: { 
-      maxDiffPixelRatio: 0.05,
-      threshold: 0.2,
-      /* スナップショットはリポジトリで管理 */
-      pathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}'
-    }
-  },
+
 
   /* Configure projects for major browsers */
   projects: [
