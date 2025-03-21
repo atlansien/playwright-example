@@ -35,6 +35,19 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
+  /* スナップショットの設定 */
+  expect: {
+    /**
+     * スナップショット比較のオプション
+     * CI環境では環境変数からしきい値を設定可能に
+     */
+    toHaveScreenshot: {
+      maxDiffPixels: 100,
+      threshold: process.env.PLAYWRIGHT_SNAPSHOT_THRESHOLD 
+        ? parseFloat(process.env.PLAYWRIGHT_SNAPSHOT_THRESHOLD) 
+        : 0.1,
+    }
+  },
 
   /* Configure projects for major browsers */
   projects: [

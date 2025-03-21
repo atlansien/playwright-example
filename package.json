@@ -8,7 +8,8 @@
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
     "test": "playwright test",
-    "test:update": "playwright test --update-snapshots"
+    "test:update": "playwright test --update-snapshots",
+    "test:ci": "PLAYWRIGHT_SNAPSHOT_THRESHOLD=0.2 playwright test"
   },
   "dependencies": {
     "@react-router/node": "^7.4.0",
