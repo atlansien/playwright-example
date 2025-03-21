@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 全履歴を取得してスナップショットファイルを取得するため
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
@@ -17,11 +19,24 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
+    - name: Build the application
+      run: npm run build
+    - name: Start local server and run Playwright tests
+      run: |
+        # Start the server in background
+        npm run start &
+        # Wait for server to be ready
+        npx wait-on http://localhost:5173 -t 60000
+        # Run tests with update mode disabled to compare with existing snapshots
+        npx playwright test --update-snapshots=never
+      env:
+        # Tell tests to use the server URL
+        PLAYWRIGHT_TEST_BASE_URL: http://localhost:5173
     - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
+      if: ${{ always() }}
       with:
         name: playwright-report
-        path: playwright-report/
+        path: |
+          playwright-report/
+          test-results/
         retention-days: 30

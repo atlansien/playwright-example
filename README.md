@@ -13,6 +13,7 @@ A modern, production-ready template for building full-stack React applications u
 - 🔒 TypeScript by default
 - 🎉 TailwindCSS for styling
 - 📖 [React Router docs](https://reactrouter.com/)
+- 🧪 Playwright for E2E and visual snapshot testing
 
 ## Getting Started
 
@@ -33,6 +34,28 @@ npm run dev
 ```
 
 Your application will be available at `http://localhost:5173`.
+
+## Testing
+
+### Running Playwright Tests
+
+This project includes Playwright for end-to-end and visual snapshot testing.
+
+To run the tests:
+
+```bash
+npm test
+```
+
+### Updating Snapshots
+
+If you've made intentional UI changes and need to update the snapshots:
+
+```bash
+npm run test:update-snapshots
+```
+
+The snapshot references are stored in the `tests/test-1.spec.ts-snapshots` directory.
 
 ## Building for Production
 
@@ -81,6 +104,10 @@ Make sure to deploy the output of `npm run build`
 ## Styling
 
 This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+
+## Continuous Integration
+
+This project is configured with GitHub Actions to automatically run tests on pull requests and pushes to the main branch. The workflow configuration can be found in `.github/workflows/playwright.yml`.
 
 ---
 
