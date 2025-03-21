@@ -6,9 +6,7 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc",
-    "test": "playwright test",
-    "test:update-snapshots": "playwright test --update-snapshots"
+    "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
     "@react-router/node": "^7.4.0",
@@ -19,7 +17,6 @@
     "react-router": "^7.4.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.51.1",
     "@react-router/dev": "^7.4.0",
     "@tailwindcss/vite": "^4.0.0",
     "@types/node": "^20",
@@ -29,7 +26,6 @@
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.2",
     "vite": "^5.4.11",
-    "vite-tsconfig-paths": "^5.1.4",
-    "wait-on": "^7.2.0"
+    "vite-tsconfig-paths": "^5.1.4"
   }
 }
