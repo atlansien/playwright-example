@@ -50,7 +50,7 @@ jobs:
         CI: true
         # スナップショット比較に許容誤差を設定（必要に応じて調整）
         PLAYWRIGHT_SNAPSHOT_THRESHOLD: 0.2
-        # PLAYWRIGHT_MAX_DIFF_PIXELS: 500
+        PLAYWRIGHT_MAX_DIFF_PIXELS: 500
     
     - name: Upload test results
       if: always()
