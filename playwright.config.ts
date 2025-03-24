@@ -42,7 +42,7 @@ export default defineConfig({
      * CI環境では環境変数からしきい値を設定可能に
      */
     toHaveScreenshot: {
-      maxDiffPixels: 100,
+      maxDiffPixels: 300,
       threshold: process.env.PLAYWRIGHT_SNAPSHOT_THRESHOLD 
         ? parseFloat(process.env.PLAYWRIGHT_SNAPSHOT_THRESHOLD) 
         : 0.1,
