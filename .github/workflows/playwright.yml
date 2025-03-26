@@ -13,20 +13,86 @@ jobs:
       with:
         fetch-depth: 0  # スナップショット履歴を取得するために必要
     
+    - name: Setup Memory Monitor
+      run: |
+        mkdir -p .github/scripts
+        cat > .github/scripts/memory-monitor.sh << 'EOL'
+        #!/bin/bash
+
+        # タスク名を引数から取得
+        TASK_NAME="$1"
+        if [ -z "$TASK_NAME" ]; then
+          TASK_NAME="Unknown Task"
+        fi
+
+        # 現在のメモリ使用状況を取得
+        get_memory_usage() {
+          echo "=== Memory Usage for: $TASK_NAME ==="
+          echo "--- Time: $(date '+%Y-%m-%d %H:%M:%S') ---"
+          
+          # free コマンドでメモリ使用量を取得
+          echo "== System Memory (free) =="
+          free -h
+          
+          # プロセスのメモリ使用量
+          echo "== Top Memory Processes =="
+          ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head -n 10
+          
+          # 総メモリ使用量と使用率
+          total_mem=$(free | grep Mem | awk '{print $2}')
+          used_mem=$(free | grep Mem | awk '{print $3}')
+          used_percent=$(awk "BEGIN {printf \"%.2f\", ($used_mem/$total_mem)*100}")
+          
+          echo "== Summary =="
+          echo "Total Memory: $((total_mem/1024)) MB"
+          echo "Used Memory: $((used_mem/1024)) MB"
+          echo "Memory Usage: ${used_percent}%"
+          echo "=================================="
+        }
+
+        # メモリ使用状況を出力
+        get_memory_usage
+        EOL
+        chmod +x .github/scripts/memory-monitor.sh
+        
+        # 初期メモリ状態をログ出力
+        .github/scripts/memory-monitor.sh "Initial Memory State"
+    
+    - name: Log Memory Before Setup Node
+      run: .github/scripts/memory-monitor.sh "Before Setup Node"
+      
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
         cache: 'npm'
     
+    - name: Log Memory After Setup Node
+      run: .github/scripts/memory-monitor.sh "After Setup Node"
+      
+    - name: Log Memory Before Install Dependencies
+      run: .github/scripts/memory-monitor.sh "Before Install Dependencies"
+      
     - name: Install dependencies
       run: npm ci
     
+    - name: Log Memory After Install Dependencies
+      run: .github/scripts/memory-monitor.sh "After Install Dependencies"
+      
+    - name: Log Memory Before Install Playwright
+      run: .github/scripts/memory-monitor.sh "Before Install Playwright Browsers"
+      
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     
+    - name: Log Memory After Install Playwright
+      run: .github/scripts/memory-monitor.sh "After Install Playwright Browsers"
+      
     - name: Verify Playwright installation
       run: npx playwright --version
     
+    - name: Log Memory Before Copy Snapshots
+      run: .github/scripts/memory-monitor.sh "Before Copy Snapshots"
+      
     - name: Copy snapshots to expected location
       run: |
         # GitHub Actions上での環境名に合わせてスナップショットをコピー
@@ -44,6 +110,12 @@ jobs:
         # 変換したファイルをテストディレクトリにコピー
         cp /tmp/snapshots-backup/*-linux.png tests/test-1.spec.ts-snapshots/ || true
     
+    - name: Log Memory After Copy Snapshots
+      run: .github/scripts/memory-monitor.sh "After Copy Snapshots"
+      
+    - name: Log Memory Before Run Tests
+      run: .github/scripts/memory-monitor.sh "Before Run Playwright Tests"
+      
     - name: Run Playwright tests
       run: npm test
       env:
@@ -52,6 +124,13 @@ jobs:
         PLAYWRIGHT_SNAPSHOT_THRESHOLD: 0.2
         PLAYWRIGHT_MAX_DIFF_PIXEL_RATIO: 0.02
     
+    - name: Log Memory After Run Tests
+      run: .github/scripts/memory-monitor.sh "After Run Playwright Tests"
+      
+    - name: Log Final Memory State
+      if: always()
+      run: .github/scripts/memory-monitor.sh "Final Memory State"
+      
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v4
