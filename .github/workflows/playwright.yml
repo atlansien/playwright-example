@@ -93,22 +93,24 @@ jobs:
     - name: Log Memory Before Copy Snapshots
       run: .github/scripts/memory-monitor.sh "Before Copy Snapshots"
       
-    # - name: Copy snapshots to expected location
-    #   run: |
-    #     # GitHub Actions上での環境名に合わせてスナップショットをコピー
-    #     mkdir -p /tmp/snapshots-backup
-    #     cp -r tests/test-1.spec.ts-snapshots/* /tmp/snapshots-backup/
+    - name: Copy snapshots to expected location
+      run: |
+        # GitHub Actions上での環境名に合わせてスナップショットをコピー
+        mkdir -p /tmp/snapshots-backup
+        cp -r tests/test-1.spec.ts-snapshots/* /tmp/snapshots-backup/
         
-    #     # 既存のスナップショットファイル名をGitHub Actions環境用に変換
-    #     for file in /tmp/snapshots-backup/*-darwin.png; do
-    #       if [ -f "$file" ]; then
-    #         new_name=$(echo "$file" | sed 's/-darwin.png/-linux.png/')
-    #         cp "$file" "${new_name}"
-    #       fi
-    #     done
+        # 既存のスナップショットファイル名をGitHub Actions環境用に変換
+        for file in /tmp/snapshots-backup/*-darwin.png; do
+          if [ -f "$file" ]; then
+            new_name=$(echo "$file" | sed 's/-darwin.png/-linux.png/')
+            cp "$file" "${new_name}"
+          fi
+        done
         
-    #     # 変換したファイルをテストディレクトリにコピー
-    #     cp /tmp/snapshots-backup/*-linux.png tests/test-1.spec.ts-snapshots/ || true
+        # 変換したファイルをテストディレクトリにコピー
+        cp /tmp/snapshots-backup/*-linux.png tests/test-1.spec.ts-snapshots/ || true
+
+        ls -R tests/test-1.spec.ts-snapshots/
     
     - name: Log Memory After Copy Snapshots
       run: .github/scripts/memory-monitor.sh "After Copy Snapshots"
